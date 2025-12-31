@@ -13,7 +13,7 @@ export const MENU_ITEMS = [
     id: 'm2',
     name: 'Paper Roast Masala Dosa',
     price: 95,
-    image: 'https://images.unsplash.com/photo-1694159107768-b5f382955a02?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1630383249896-424e482df921?w=800&q=80',
     description: 'Thin and crispy paper dosa stuffed with spiced potato mash. Served with 3 types of chutney.',
     category: 'morning'
   },
@@ -37,7 +37,7 @@ export const MENU_ITEMS = [
     id: 'm5',
     name: 'Medu Vada (2 Pcs)',
     price: 40,
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1626776877219-173448b28ffd?w=800&q=80',
     description: 'Crispy and fluffy lentil fritters, a perfect breakfast snack with chutney.',
     category: 'morning'
   },
