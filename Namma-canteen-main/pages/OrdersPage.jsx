@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { OrderStatus } from '../components/AdminView';
 
 const OrdersPage = () => {
   const {
@@ -9,6 +8,7 @@ const OrdersPage = () => {
     submitFeedback,
     profile,
     addNotification,
+    OrderStatus,
   } = useApp();
 
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
