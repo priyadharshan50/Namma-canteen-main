@@ -45,9 +45,13 @@ The system features a **Real-Time Kitchen Display System (KDS)** for staff and a
 ---
 
 ## 📸 Screenshots
-| Student Menu & AI | Discount Logic | Kitchen Dashboard |
-|:---:|:---:|:---:|
-| *[Insert Screenshot of Menu]* | *[Insert Screenshot of Green Banner]* | *[Insert Screenshot of Admin View]* |
+ **Student Menu & AI**
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/eb501f76-1be0-4104-b46d-77fd958c0f26" />
+**Discount Logic**
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/8ea1e6e7-51e5-46cb-8df9-dea426496c48" />
+**Kitchen Dashboard**
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/b5e86198-d676-486c-9df9-da34072ad817" />
+
 
 ---
 
@@ -57,7 +61,7 @@ Since this is a client-side web application, no complex server installation is r
 
 1.  **Clone the Repository:**
     ```bash
-    git clone [https://github.com/](https://github.com/)[YOUR_USERNAME]/namma-canteen.git
+    git clone [https://github.com/](https://github.com/priyadharshan50/namma-canteen.git
     ```
 2.  **Open the Project:**
     * Navigate to the folder.
