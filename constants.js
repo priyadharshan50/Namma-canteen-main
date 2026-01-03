@@ -5,7 +5,7 @@ export const MENU_ITEMS = [
     id: 'm1',
     name: 'Ghee Mini Idli (14 pcs)',
     price: 65,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Idli_Sambar.jpg/1200px-Idli_Sambar.jpg',
+    image: 'https://rakskitchen.net/wp-content/uploads/2014/01/11919320035_1f6dd4da79_z-500x500.jpg',
     description: 'Miniature button idlis floating in aromatic sambar with a splash of pure melted ghee.',
     category: 'morning'
   },
