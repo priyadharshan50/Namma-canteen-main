@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { resetPassword } from '../services/authService';
 import { useApp } from '../context/AppContext';
+import PageTransition from '../components/PageTransition';
 
 const ForgotPasswordScreen = () => {
   const navigate = useNavigate();
@@ -32,99 +33,100 @@ const ForgotPasswordScreen = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Card */}
-        <div className="bg-white rounded-3xl p-8 shadow-2xl">
-          {!emailSent ? (
-            <>
-              {/* Icon */}
-              <div className="text-center mb-6">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
-                  <span className="text-3xl">🔑</span>
-                </div>
-                <h1 className="text-2xl font-black text-gray-900">Forgot Password?</h1>
-                <p className="text-gray-600 text-sm mt-2">
-                  No worries! Enter your email and we'll send you a reset link.
-                </p>
-              </div>
+    <PageTransition>
+      <div className="min-h-screen flex items-center justify-center p-4 bg-dark-950">
+        {/* Background Effects */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/3 right-1/3 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        </div>
 
-              {/* Form */}
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block mb-2">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="student@college.edu"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-gray-50 border-2 border-transparent focus:border-orange-500 rounded-xl py-4 px-4 font-bold outline-none transition-all"
-                    autoFocus
-                  />
+        <div className="w-full max-w-md relative z-10">
+          {/* Card */}
+          <div className="card-glass p-8 rounded-3xl">
+            {!emailSent ? (
+              <>
+                {/* Icon */}
+                <div className="text-center mb-6 fade-in">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-primary-500/20 rounded-full mb-4 animate-float">
+                    <span className="text-4xl">🔐</span>
+                  </div>
+                  <h1 className="text-2xl font-black text-white">Forgot Password?</h1>
+                  <p className="text-dark-400 text-sm mt-2">
+                    No worries! Enter your email and we'll send you a reset link.
+                  </p>
                 </div>
+
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="input-group">
+                    <label className="input-group-label">Email Address</label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="student@college.edu"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="input input-glow"
+                      autoFocus
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="btn btn-primary btn-xl w-full btn-ripple"
+                  >
+                    {isLoading ? (
+                      <span className="flex items-center gap-2">
+                        <div className="spinner"></div>
+                        Sending...
+                      </span>
+                    ) : (
+                      <>Send Reset Link</>
+                    )}
+                  </button>
+                </form>
+
+                {/* Back Link */}
+                <div className="mt-6 text-center">
+                  <Link to="/login" className="text-dark-400 font-bold text-sm hover:text-white transition-colors">
+                    ← Back to Login
+                  </Link>
+                </div>
+              </>
+            ) : (
+              /* Success State */
+              <div className="text-center fade-in">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-green-500/20 rounded-full mb-6 scale-in">
+                  <span className="text-4xl">✅</span>
+                </div>
+                <h1 className="text-2xl font-black text-white mb-2">Check Your Email</h1>
+                <p className="text-dark-400 mb-6">
+                  We've sent a password reset link to:
+                  <br />
+                  <span className="font-bold text-white">{email}</span>
+                </p>
+                
+                <Link
+                  to="/login"
+                  className="btn btn-primary btn-xl w-full"
+                >
+                  Back to Login
+                </Link>
 
                 <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full bg-orange-600 text-white font-black py-4 rounded-xl hover:bg-orange-700 transition-all disabled:opacity-50 shadow-lg flex items-center justify-center gap-2"
+                  onClick={() => setEmailSent(false)}
+                  className="mt-4 text-primary-400 font-bold text-sm hover:text-primary-300 transition-colors"
                 >
-                  {isLoading ? (
-                    <>
-                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                      </svg>
-                      Sending...
-                    </>
-                  ) : (
-                    <>Send Reset Link</>
-                  )}
+                  Try a different email
                 </button>
-              </form>
-            </>
-          ) : (
-            /* Success State */
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
-                <span className="text-4xl">✅</span>
               </div>
-              <h1 className="text-2xl font-black text-gray-900 mb-2">Check Your Email</h1>
-              <p className="text-gray-600 mb-6">
-                We've sent a password reset link to:
-                <br />
-                <span className="font-bold text-gray-900">{email}</span>
-              </p>
-              
-              <Link
-                to="/login"
-                className="block w-full bg-orange-600 text-white font-black py-4 rounded-xl hover:bg-orange-700 transition-all shadow-lg"
-              >
-                Back to Login
-              </Link>
-
-              <button
-                onClick={() => setEmailSent(false)}
-                className="mt-4 text-orange-600 font-bold text-sm hover:underline"
-              >
-                Try a different email
-              </button>
-            </div>
-          )}
-
-          {/* Back Link */}
-          {!emailSent && (
-            <div className="mt-6 text-center">
-              <Link to="/login" className="text-gray-500 font-bold text-sm hover:text-gray-700">
-                ← Back to Login
-              </Link>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 };
 

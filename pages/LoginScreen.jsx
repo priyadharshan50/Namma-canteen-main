@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import PageTransition from '../components/PageTransition';
 
 const LoginScreen = () => {
   const navigate = useNavigate();
@@ -37,7 +38,6 @@ const LoginScreen = () => {
     if (result.success) {
       addNotification('Welcome back! 👋', 'success');
       
-      // Check verification status and redirect accordingly
       if (!result.user.emailVerified) {
         navigate('/email-verification', { state: { email: result.user.email } });
       } else if (!result.user.isPhoneVerified) {
@@ -50,7 +50,6 @@ const LoginScreen = () => {
     } else {
       if (result.needsVerification) {
         addNotification(result.error, 'error');
-        // Navigate to email verification screen
         navigate('/email-verification', { state: { email: result.email } });
       } else {
         addNotification(result.error || 'Login failed', 'error');
@@ -59,113 +58,153 @@ const LoginScreen = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-2xl mb-4">
-            <span className="text-4xl">🍛</span>
-          </div>
-          <h1 className="text-3xl font-black text-white">Welcome Back!</h1>
-          <p className="text-orange-100 font-medium">Log in to Namma Canteen</p>
-        </div>
-
-        {/* Login Form */}
-        <div className="bg-white rounded-3xl p-8 shadow-2xl">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email */}
-            <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                required
-                placeholder="student@college.edu"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full bg-gray-50 border-2 border-transparent focus:border-orange-500 rounded-xl py-4 px-4 font-bold outline-none transition-all"
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  required
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="w-full bg-gray-50 border-2 border-transparent focus:border-orange-500 rounded-xl py-4 px-4 font-bold outline-none transition-all pr-12"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  {showPassword ? '🙈' : '👁️'}
-                </button>
+    <PageTransition>
+      <div className="min-h-screen flex">
+        {/* Left Side - Decorative */}
+        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-dark-900">
+          {/* Gradient Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-600/20 via-dark-900 to-dark-950"></div>
+          
+          {/* Floating Orbs */}
+          <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-primary-500/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary-600/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          
+          {/* Content */}
+          <div className="relative z-10 flex flex-col justify-center items-center w-full p-12">
+            <div className="text-center space-y-8 stagger-children">
+              {/* Logo */}
+              <div className="w-28 h-28 bg-gradient-to-br from-primary-500 to-primary-600 rounded-3xl shadow-2xl flex items-center justify-center mx-auto animate-float">
+                <span className="text-6xl">🍛</span>
+              </div>
+              
+              <div>
+                <h2 className="text-4xl font-black text-white mb-3">
+                  Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-500">Namma Canteen</span>
+                </h2>
+                <p className="text-dark-400 text-lg max-w-md">
+                  Smart campus dining with AI food pairing, real-time tracking, and gamified rewards.
+                </p>
+              </div>
+              
+              {/* Feature Pills */}
+              <div className="flex flex-wrap justify-center gap-3">
+                <span className="px-4 py-2 bg-dark-800/50 border border-dark-700 rounded-full text-sm text-dark-300">
+                  🤖 AI Suggestions
+                </span>
+                <span className="px-4 py-2 bg-dark-800/50 border border-dark-700 rounded-full text-sm text-dark-300">
+                  📱 OTP Verification
+                </span>
+                <span className="px-4 py-2 bg-dark-800/50 border border-dark-700 rounded-full text-sm text-dark-300">
+                  💳 Namma Credit
+                </span>
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* Forgot Password Link */}
-            <div className="text-right">
-              <Link
-                to="/forgot-password"
-                className="text-sm text-orange-600 font-bold hover:underline"
-              >
-                Forgot Password?
-              </Link>
+        {/* Right Side - Login Form */}
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 bg-dark-950">
+          <div className="w-full max-w-md space-y-8">
+            {/* Mobile Logo */}
+            <div className="lg:hidden text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl shadow-lg mb-4">
+                <span className="text-3xl">🍛</span>
+              </div>
+            </div>
+            
+            {/* Header */}
+            <div className="text-center lg:text-left">
+              <h1 className="text-3xl font-black text-white mb-2">Welcome Back!</h1>
+              <p className="text-dark-400">Log in to your Namma Canteen account</p>
             </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-orange-600 text-white font-black py-4 rounded-xl hover:bg-orange-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg flex items-center justify-center gap-2"
-            >
-              {isLoading ? (
-                <>
-                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                  </svg>
-                  Logging In...
-                </>
-              ) : 'Log In'}
-            </button>
-          </form>
+            {/* Login Form */}
+            <div className="card-glass p-8 rounded-3xl">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Email Input */}
+                <div className="input-group">
+                  <label className="input-group-label">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="student@college.edu"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="input input-glow"
+                  />
+                </div>
 
-          {/* Divider */}
-          <div className="flex items-center gap-4 my-6">
-            <div className="flex-1 h-px bg-gray-200"></div>
-            <span className="text-xs font-bold text-gray-400 uppercase">or</span>
-            <div className="flex-1 h-px bg-gray-200"></div>
+                {/* Password Input */}
+                <div className="input-group">
+                  <label className="input-group-label">Password</label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      required
+                      placeholder="••••••••"
+                      value={formData.password}
+                      onChange={handleChange}
+                      className="input input-glow pr-12"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-400 hover:text-white transition-colors"
+                    >
+                      {showPassword ? '🙈' : '👁️'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Forgot Password Link */}
+                <div className="text-right">
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm text-primary-400 font-bold hover:text-primary-300 transition-colors"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="btn btn-primary btn-xl w-full btn-ripple"
+                >
+                  {isLoading ? (
+                    <span className="flex items-center gap-3">
+                      <div className="spinner"></div>
+                      Logging In...
+                    </span>
+                  ) : 'Log In'}
+                </button>
+              </form>
+
+              {/* Divider */}
+              <div className="divider-text my-6">or</div>
+
+              {/* Signup Link */}
+              <p className="text-center text-dark-400">
+                Don't have an account?{' '}
+                <Link to="/signup" className="text-primary-400 font-bold hover:text-primary-300 transition-colors">
+                  Sign Up
+                </Link>
+              </p>
+            </div>
+
+            {/* Skip for Demo */}
+            <div className="text-center">
+              <Link to="/" className="text-dark-500 text-sm font-medium hover:text-dark-300 transition-colors">
+                Skip for now (Demo Mode) →
+              </Link>
+            </div>
           </div>
-
-          {/* Signup Link */}
-          <p className="text-center text-gray-600">
-            Don't have an account?{' '}
-            <Link to="/signup" className="text-orange-600 font-bold hover:underline">
-              Sign Up
-            </Link>
-          </p>
-        </div>
-
-        {/* Skip for Demo */}
-        <div className="text-center mt-6">
-          <Link to="/" className="text-white/80 text-sm font-medium hover:text-white underline">
-            Skip for now (Demo Mode)
-          </Link>
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 };
 

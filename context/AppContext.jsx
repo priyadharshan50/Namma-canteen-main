@@ -162,7 +162,7 @@ export const AppProvider = ({ children }) => {
     ready: { border: '#10B981', bg: 'bg-green-900/20', label: '✅ Ready' },
     delivered: { border: '#3B82F6', bg: 'bg-blue-900/20', label: '🎉 Delivered' },
     cancelled: { border: '#EF4444', bg: 'bg-red-900/20', label: '❌ Cancelled' },
-    sms: { border: '#F97316', bg: 'bg-orange-900/20', label: '📱 SMS' },
+    sms: { border: '#10B981', bg: 'bg-emerald-900/20', label: '📱 SMS' },
     info: { border: '#8B5CF6', bg: 'bg-purple-900/20', label: 'ℹ️ Info' },
     success: { border: '#10B981', bg: 'bg-green-900/20', label: '✅ Success' },
     error: { border: '#EF4444', bg: 'bg-red-900/20', label: '❌ Error' },

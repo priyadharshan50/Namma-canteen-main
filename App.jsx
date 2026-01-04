@@ -23,36 +23,36 @@ const ToastNotifications = () => {
   // Get label background color based on notification type
   const getLabelBgColor = (type) => {
     switch(type) {
-      case 'cooking': return 'bg-yellow-500';
-      case 'ready': return 'bg-green-500';
+      case 'cooking': return 'bg-amber-500';
+      case 'ready': return 'bg-primary-500';
       case 'delivered': return 'bg-blue-500';
       case 'cancelled': return 'bg-red-500';
-      case 'success': return 'bg-green-500';
+      case 'success': return 'bg-primary-500';
       case 'error': return 'bg-red-500';
-      case 'info': return 'bg-purple-500';
-      default: return 'bg-orange-500';
+      case 'info': return 'bg-dark-600';
+      default: return 'bg-primary-600';
     }
   };
 
   return (
-    <div className="fixed top-20 right-4 z-[1000] w-full max-w-sm space-y-3 pointer-events-none">
+    <div className="fixed top-24 right-4 z-[9999] w-full max-w-sm space-y-3 pointer-events-none">
       {toasts.map(n => (
         <div 
           key={n.id} 
-          className="pointer-events-auto bg-gray-900 text-white p-4 rounded-2xl shadow-2xl transition-all animate-slide-in"
+          className="pointer-events-auto card-glass p-4 rounded-2xl shadow-2xl transition-all animate-slide-in border-l-4"
           style={{ 
-            borderLeft: `4px solid ${n.borderColor || '#F97316'}`,
+            borderLeftColor: n.borderColor || '#10b981',
           }}
         >
           <div className="flex items-center gap-2 mb-2">
             <span 
-              className={`${getLabelBgColor(n.type)} text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider`}
+              className={`${getLabelBgColor(n.type)} text-[9px] font-black px-2 py-0.5 rounded text-dark-950 uppercase tracking-wider`}
             >
               {n.label || (n.type === 'sms' ? 'SMS' : 'INFO')}
             </span>
-            <span className="text-[10px] text-gray-400">just now</span>
+            <span className="text-[10px] text-dark-500 font-bold">Just Now</span>
           </div>
-          <p className="text-sm font-medium leading-snug">{n.message}</p>
+          <p className="text-sm font-bold text-white leading-snug">{n.message}</p>
         </div>
       ))}
     </div>

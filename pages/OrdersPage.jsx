@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import PageTransition from '../components/PageTransition';
 
 const OrdersPage = () => {
   const {
@@ -44,204 +46,238 @@ const OrdersPage = () => {
   };
 
   const activeOrders = orders.filter(o => 
-    o.status === OrderStatus.PLACED || 
-    o.status === OrderStatus.COOKING || 
-    o.status === OrderStatus.READY
+    o.status === OrderStatus?.PLACED || 
+    o.status === OrderStatus?.COOKING || 
+    o.status === OrderStatus?.READY
   );
 
   const completedOrders = orders.filter(o => 
-    o.status === OrderStatus.DELIVERED || 
-    o.status === OrderStatus.CANCELLED
+    o.status === OrderStatus?.DELIVERED || 
+    o.status === OrderStatus?.CANCELLED
   );
 
-  return (
-    <div className="min-h-screen bg-orange-50 py-8">
-      <div className="max-w-5xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-4xl font-black text-gray-900 mb-2">My Orders</h1>
-          <p className="text-gray-600">Track and manage your orders</p>
-        </div>
+  // Status step indicator
+  const getStatusStep = (status) => {
+    if (status === OrderStatus?.PLACED) return 1;
+    if (status === OrderStatus?.COOKING) return 2;
+    if (status === OrderStatus?.READY) return 3;
+    return 0;
+  };
 
-        {/* Feedback Modal */}
-        {showFeedbackModal && selectedOrderForFeedback && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[103] flex items-center justify-center p-4">
-            <div className="bg-white rounded-[2.5rem] w-full max-w-md p-8 shadow-2xl relative border-t-8 border-orange-500 overflow-hidden">
-               <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-2xl font-black text-gray-900">Feedback for Order #{selectedOrderForFeedback.id}</h3>
-                  <button onClick={() => setShowFeedbackModal(false)} className="text-gray-400 hover:text-gray-600 font-bold" aria-label="Close feedback form">✕</button>
-               </div>
-               <div className="space-y-6">
+  return (
+    <PageTransition>
+      <div className="min-h-screen py-8 pb-24 md:pb-8">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="mb-8">
+            <h1 className="text-4xl font-black text-white mb-2">My Orders</h1>
+            <p className="text-dark-400">Track and manage your orders</p>
+          </div>
+
+          {/* Feedback Modal */}
+          {showFeedbackModal && selectedOrderForFeedback && (
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[103] flex items-center justify-center p-4 modal-backdrop-enter">
+              <div className="card-glass w-full max-w-md p-8 rounded-3xl modal-content-enter">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-2xl font-black text-white">Rate Order #{selectedOrderForFeedback.id}</h3>
+                  <button onClick={() => setShowFeedbackModal(false)} className="text-dark-400 hover:text-white transition-colors">✕</button>
+                </div>
+                <div className="space-y-6">
                   <div>
-                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-2 block mb-2">Your Rating</label>
+                    <label className="input-group-label block mb-3">Your Rating</label>
                     <div className="flex justify-center gap-2">
                       {[1, 2, 3, 4, 5].map((star) => (
-                        <svg 
-                          key={star} 
-                          className={`w-10 h-10 cursor-pointer transition-colors ${feedbackRating >= star ? 'text-orange-500' : 'text-gray-300'}`}
-                          fill="currentColor" 
-                          viewBox="0 0 20 20"
+                        <button
+                          key={star}
                           onClick={() => setFeedbackRating(star)}
+                          className={`text-4xl transition-all hover:scale-110 ${feedbackRating >= star ? 'text-yellow-400' : 'text-dark-600'}`}
                         >
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
+                          ★
+                        </button>
                       ))}
                     </div>
                   </div>
-                  <div>
-                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-2 block mb-2">Your Comments</label>
+                  <div className="input-group">
+                    <label className="input-group-label">Comments (Optional)</label>
                     <textarea 
                       value={feedbackComment} onChange={e => setFeedbackComment(e.target.value)}
                       placeholder="Tell us what you loved or how we can improve..."
-                      className="w-full bg-gray-50 border-2 border-transparent focus:border-orange-500 rounded-2xl p-4 text-sm font-bold transition-all resize-none outline-none" rows={4}
+                      className="input input-glow resize-none" rows={4}
                     ></textarea>
                   </div>
                   <button 
                     onClick={handleFeedbackSubmit} 
                     disabled={feedbackRating === 0}
-                    className="w-full bg-orange-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-orange-700 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn btn-primary btn-xl w-full"
                   >
                     Submit Feedback
                   </button>
-               </div>
-            </div>
-          </div>
-        )}
-
-        {/* Active Orders */}
-        {activeOrders.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-2xl font-black text-gray-900 mb-4 flex items-center gap-2">
-              <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
-              Active Orders ({activeOrders.length})
-            </h2>
-            <div className="space-y-4">
-              {activeOrders.map((order) => (
-                <div key={order.id} className="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-orange-500">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h3 className="text-xl font-black text-gray-900">Order #{order.id}</h3>
-                      <p className="text-sm text-gray-500">{formatTime(order.timestamp)}</p>
-                    </div>
-                    <span className={`px-4 py-2 rounded-full text-xs font-black uppercase ${
-                      order.status === OrderStatus.READY ? 'bg-green-100 text-green-700' :
-                      order.status === OrderStatus.COOKING ? 'bg-yellow-100 text-yellow-700' :
-                      'bg-blue-100 text-blue-700'
-                    }`}>
-                      {order.status}
-                    </span>
-                  </div>
-                  
-                  <div className="space-y-2 mb-4">
-                    {order.items.map((item) => (
-                      <div key={item.id} className="flex justify-between text-sm">
-                        <span className="text-gray-700">{item.quantity}x {item.name}</span>
-                        <span className="font-bold">₹{item.price * item.quantity}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {order.appliedDiscountPercentage > 0 && (
-                    <div className="text-sm text-green-600 font-bold mb-2">
-                      💰 Saved ₹{(order.originalTotalPrice - order.totalPrice).toFixed(2)} ({order.appliedDiscountPercentage}% discount)
-                    </div>
-                  )}
-
-                  <div className="pt-4 border-t border-gray-100 flex justify-between items-center">
-                    <span className="text-lg font-black text-gray-900">Total: ₹{order.totalPrice.toFixed(2)}</span>
-                    {order.status === OrderStatus.PLACED && (
-                      <button 
-                        onClick={() => cancelOrder(order.id)}
-                        className="text-red-500 font-bold text-sm hover:underline"
-                      >
-                        Cancel Order
-                      </button>
-                    )}
-                  </div>
-
-                  {order.aiSuggestion && (
-                    <div className="mt-4 bg-purple-50 p-4 rounded-xl border border-purple-100">
-                      <p className="text-xs font-black text-purple-600 uppercase mb-1">🤖 AI Suggestion</p>
-                      <p className="text-sm text-purple-900">{order.aiSuggestion}</p>
-                    </div>
-                  )}
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Completed Orders */}
-        {completedOrders.length > 0 && (
-          <div>
-            <h2 className="text-2xl font-black text-gray-900 mb-4">Order History</h2>
-            <div className="space-y-4">
-              {completedOrders.map((order) => (
-                <div key={order.id} className={`bg-white rounded-2xl p-6 shadow-md ${
-                  order.status === OrderStatus.CANCELLED ? 'opacity-50' : ''
-                }`}>
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h3 className="text-lg font-black text-gray-900">Order #{order.id}</h3>
-                      <p className="text-sm text-gray-500">{formatTime(order.timestamp)}</p>
-                    </div>
-                    <span className={`px-4 py-2 rounded-full text-xs font-black uppercase ${
-                      order.status === OrderStatus.DELIVERED ? 'bg-gray-100 text-gray-700' :
-                      'bg-red-100 text-red-700'
-                    }`}>
-                      {order.status}
-                    </span>
-                  </div>
-
-                  <div className="space-y-2 mb-4">
-                    {order.items.map((item) => (
-                      <div key={item.id} className="flex justify-between text-sm">
-                        <span className="text-gray-700">{item.quantity}x {item.name}</span>
-                        <span className="font-bold">₹{item.price * item.quantity}</span>
+          {/* Active Orders */}
+          {activeOrders.length > 0 && (
+            <div className="mb-8 fade-in">
+              <h2 className="text-2xl font-black text-white mb-4 flex items-center gap-2">
+                <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+                Active Orders ({activeOrders.length})
+              </h2>
+              <div className="space-y-4 stagger-children">
+                {activeOrders.map((order) => (
+                  <div key={order.id} className="card-elevated rounded-2xl p-6 border-l-4 border-primary-500">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="text-xl font-black text-white">Order #{order.id}</h3>
+                        <p className="text-sm text-dark-400">{formatTime(order.timestamp)}</p>
                       </div>
-                    ))}
-                  </div>
-
-                  <div className="pt-4 border-t border-gray-100 flex justify-between items-center">
-                    <span className="text-lg font-black text-gray-900">Total: ₹{order.totalPrice.toFixed(2)}</span>
-                    {order.status === OrderStatus.DELIVERED && !order.feedbackSubmitted && (
-                      <button
-                        onClick={() => { setSelectedOrderForFeedback(order); setShowFeedbackModal(true); }}
-                        className="text-orange-500 font-bold text-sm hover:underline flex items-center gap-1"
-                      >
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        Leave Feedback
-                      </button>
-                    )}
-                    {order.feedbackSubmitted && (
-                      <span className="text-gray-400 text-sm font-bold flex items-center gap-1">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        Feedback Submitted
+                      <span className={`badge ${
+                        order.status === OrderStatus?.READY ? 'badge-success' :
+                        order.status === OrderStatus?.COOKING ? 'badge-warning' :
+                        'bg-blue-500 text-white'
+                      }`}>
+                        {order.status}
                       </span>
+                    </div>
+
+                    {/* Status Timeline */}
+                    <div className="flex items-center justify-between mb-6 px-4">
+                      {[
+                        { step: 1, label: 'Placed', icon: '📝' },
+                        { step: 2, label: 'Cooking', icon: '🍳' },
+                        { step: 3, label: 'Ready', icon: '✅' },
+                      ].map((s, i) => (
+                        <React.Fragment key={s.step}>
+                          <div className="flex flex-col items-center">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg transition-all ${
+                              getStatusStep(order.status) >= s.step 
+                                ? 'bg-primary-500 text-white scale-110' 
+                                : 'bg-dark-700 text-dark-500'
+                            }`}>
+                              {s.icon}
+                            </div>
+                            <span className={`text-xs mt-2 font-bold ${
+                              getStatusStep(order.status) >= s.step ? 'text-primary-400' : 'text-dark-500'
+                            }`}>
+                              {s.label}
+                            </span>
+                          </div>
+                          {i < 2 && (
+                            <div className={`flex-1 h-1 mx-2 rounded ${
+                              getStatusStep(order.status) > s.step ? 'bg-primary-500' : 'bg-dark-700'
+                            }`}></div>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                    
+                    {/* Order Items */}
+                    <div className="space-y-2 mb-4 bg-dark-800/50 rounded-xl p-4 border border-dark-700">
+                      {order.items.map((item) => (
+                        <div key={item.id} className="flex justify-between text-sm">
+                          <span className="text-dark-300">{item.quantity}x {item.name}</span>
+                          <span className="font-bold text-white">₹{item.price * item.quantity}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {order.appliedDiscountPercentage > 0 && (
+                      <div className="text-sm text-green-400 font-bold mb-2">
+                        💰 Saved ₹{(order.originalTotalPrice - order.totalPrice).toFixed(2)} ({order.appliedDiscountPercentage}% discount)
+                      </div>
+                    )}
+
+                    <div className="pt-4 border-t border-dark-700 flex justify-between items-center">
+                      <span className="text-lg font-black text-white">Total: <span className="text-primary-400">₹{order.totalPrice.toFixed(2)}</span></span>
+                      {order.status === OrderStatus?.PLACED && (
+                        <button 
+                          onClick={() => cancelOrder(order.id)}
+                          className="text-red-400 font-bold text-sm hover:text-red-300 transition-colors"
+                        >
+                          Cancel Order
+                        </button>
+                      )}
+                    </div>
+
+                    {order.aiSuggestion && (
+                      <div className="mt-4 bg-purple-500/10 p-4 rounded-xl border border-purple-500/30">
+                        <p className="text-xs font-black text-purple-400 uppercase mb-1">🤖 AI Suggestion</p>
+                        <p className="text-sm text-purple-300">{order.aiSuggestion}</p>
+                      </div>
                     )}
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Empty State */}
-        {orders.length === 0 && (
-          <div className="bg-white rounded-3xl p-16 text-center shadow-lg">
-            <div className="text-6xl mb-4">📋</div>
-            <h3 className="text-2xl font-black text-gray-900 mb-2">No Orders Yet</h3>
-            <p className="text-gray-600 mb-6">Start browsing our delicious menu!</p>
-            <a href="/menu" className="inline-block bg-orange-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-orange-700 transition-all">
-              Browse Menu
-            </a>
-          </div>
-        )}
+          {/* Completed Orders */}
+          {completedOrders.length > 0 && (
+            <div className="fade-in">
+              <h2 className="text-2xl font-black text-white mb-4">Order History</h2>
+              <div className="space-y-4 stagger-children">
+                {completedOrders.map((order) => (
+                  <div key={order.id} className={`card-elevated rounded-2xl p-6 ${
+                    order.status === OrderStatus?.CANCELLED ? 'opacity-50' : ''
+                  }`}>
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="text-lg font-black text-white">Order #{order.id}</h3>
+                        <p className="text-sm text-dark-400">{formatTime(order.timestamp)}</p>
+                      </div>
+                      <span className={`badge ${
+                        order.status === OrderStatus?.DELIVERED ? 'bg-dark-600 text-dark-300' :
+                        'badge-error'
+                      }`}>
+                        {order.status}
+                      </span>
+                    </div>
+
+                    <div className="space-y-2 mb-4">
+                      {order.items.map((item) => (
+                        <div key={item.id} className="flex justify-between text-sm">
+                          <span className="text-dark-400">{item.quantity}x {item.name}</span>
+                          <span className="font-bold text-dark-300">₹{item.price * item.quantity}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="pt-4 border-t border-dark-700 flex justify-between items-center">
+                      <span className="text-lg font-black text-white">Total: ₹{order.totalPrice.toFixed(2)}</span>
+                      {order.status === OrderStatus?.DELIVERED && !order.feedbackSubmitted && (
+                        <button
+                          onClick={() => { setSelectedOrderForFeedback(order); setShowFeedbackModal(true); }}
+                          className="text-primary-400 font-bold text-sm hover:text-primary-300 transition-colors flex items-center gap-1"
+                        >
+                          ⭐ Leave Feedback
+                        </button>
+                      )}
+                      {order.feedbackSubmitted && (
+                        <span className="text-green-400 text-sm font-bold flex items-center gap-1">
+                          ✓ Feedback Submitted
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Empty State */}
+          {orders.length === 0 && (
+            <div className="card-glass rounded-3xl p-16 text-center">
+              <div className="text-6xl mb-4 opacity-50">📋</div>
+              <h3 className="text-2xl font-black text-white mb-2">No Orders Yet</h3>
+              <p className="text-dark-400 mb-6">Start browsing our delicious menu!</p>
+              <Link to="/menu" className="btn btn-primary btn-xl">
+                Browse Menu
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </PageTransition>
   );
 };
 

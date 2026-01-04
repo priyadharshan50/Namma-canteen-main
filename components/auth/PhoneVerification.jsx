@@ -109,38 +109,43 @@ const PhoneVerification = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-dark-950 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background Orbs */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl animate-pulse"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary-600/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+
       {/* Invisible reCAPTCHA container */}
       <div id="recaptcha-container" ref={recaptchaRef}></div>
 
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md relative z-10">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-2xl mb-4">
-            <span className="text-4xl">{step === 'phone' ? '📱' : '🔐'}</span>
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-24 h-24 bg-dark-900 border border-dark-800 rounded-3xl shadow-2xl mb-6 relative group">
+            <div className="absolute inset-0 bg-primary-500/20 rounded-3xl blur-xl group-hover:bg-primary-500/40 transition-all"></div>
+            <span className="text-5xl relative">{step === 'phone' ? '📱' : '🔐'}</span>
           </div>
-          <h1 className="text-3xl font-black text-white">
-            {step === 'phone' ? 'Verify Your Phone' : 'Enter OTP'}
+          <h1 className="text-4xl font-black text-white tracking-tight">
+            {step === 'phone' ? 'Verify Identity' : 'Secure Entry'}
           </h1>
-          <p className="text-orange-100 font-medium mt-2">
+          <p className="text-dark-400 font-medium mt-3">
             {step === 'phone' 
-              ? 'We\'ll send a verification code to your phone' 
-              : `Code sent to +91 ${phoneNumber}`}
+              ? 'Multi-factor authentication for your security' 
+              : `Verification code sent to +91 ${phoneNumber}`}
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-3xl p-8 shadow-2xl">
+        <div className="card-glass p-8 rounded-[2.5rem] border border-dark-800 shadow-2xl overflow-hidden relative">
           {step === 'phone' ? (
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Phone Input */}
-              <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block mb-2">
-                  Mobile Number
+              <div className="space-y-4">
+                <label className="text-xs font-black text-dark-500 uppercase tracking-[0.2em] block ml-1">
+                  Connect Your Mobile
                 </label>
-                <div className="flex gap-2">
-                  <div className="bg-gray-100 rounded-xl py-4 px-4 font-bold text-gray-600 flex items-center">
-                    <span className="mr-1">🇮🇳</span> +91
+                <div className="flex gap-3">
+                  <div className="bg-dark-900 border border-dark-800 rounded-2xl py-5 px-5 font-black text-white flex items-center shadow-inner">
+                    <span className="mr-2">🇮🇳</span> +91
                   </div>
                   <input
                     type="tel"
@@ -148,23 +153,26 @@ const PhoneVerification = () => {
                     placeholder="9876543210"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
-                    className="flex-1 bg-gray-50 border-2 border-transparent focus:border-orange-500 rounded-xl py-4 px-4 font-bold outline-none transition-all text-lg tracking-wider"
+                    className="flex-1 bg-dark-900 border border-dark-800 focus:border-primary-500 rounded-2xl py-5 px-6 font-black outline-none transition-all text-xl tracking-widest text-white shadow-inner"
                     autoFocus
                   />
                 </div>
               </div>
 
               {/* Info Box */}
-              <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
-                <div className="flex items-start gap-3">
-                  <span className="text-xl">ℹ️</span>
+              <div className="bg-primary-500/5 rounded-2xl p-5 border border-primary-500/10">
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 bg-primary-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <span className="text-xl">🛡️</span>
+                  </div>
                   <div>
-                    <p className="text-sm text-blue-700 font-medium">
-                      A 6-digit OTP will be sent via SMS to verify your identity.
+                    <h4 className="text-sm font-black text-primary-400 uppercase tracking-wider mb-1">Security Protocol</h4>
+                    <p className="text-sm text-dark-300 leading-relaxed">
+                      We'll send a one-time passcode to ensure it's really you.
                     </p>
                     {!IS_FIREBASE_ACTIVE && (
-                      <p className="text-xs text-blue-500 mt-1">
-                        Demo Mode: OTP will be displayed on screen
+                      <p className="text-[10px] font-black text-primary-600 uppercase mt-2 tracking-widest">
+                        Demo Mode Active
                       </p>
                     )}
                   </div>
@@ -175,49 +183,47 @@ const PhoneVerification = () => {
               <button
                 onClick={handleSendOTP}
                 disabled={isLoading || phoneNumber.length < 10}
-                className="w-full bg-orange-600 text-white font-black py-4 rounded-xl hover:bg-orange-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg flex items-center justify-center gap-2"
+                className="btn btn-primary btn-xl w-full flex items-center justify-center gap-3 group"
               >
                 {isLoading ? (
                   <>
-                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                    </svg>
-                    Sending...
+                    <div className="w-5 h-5 border-2 border-dark-950/30 border-t-dark-950 rounded-full animate-spin"></div>
+                    Processing...
                   </>
                 ) : (
                   <>
-                    <span>📲</span> Send Verification Code
+                    <span className="group-hover:translate-x-1 transition-transform">📲</span>
+                    Request Access Code
                   </>
                 )}
               </button>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Demo OTP Display */}
               {demoOtp && (
-                <div className="bg-green-50 border-2 border-green-300 rounded-xl p-4 text-center">
-                  <p className="text-xs text-green-600 font-bold uppercase tracking-wider mb-1">
-                    Demo Mode - Your OTP
+                <div className="bg-primary-500/10 border border-primary-500/20 rounded-2xl p-6 text-center animate-bounce-subtle">
+                  <p className="text-[10px] text-primary-400 font-black uppercase tracking-[0.3em] mb-2">
+                    DEMO BYPASS KEY
                   </p>
-                  <p className="text-3xl font-black text-green-700 tracking-[0.3em]">
+                  <p className="text-4xl font-black text-primary-400 tracking-[0.4em]">
                     {demoOtp}
                   </p>
                 </div>
               )}
 
               {/* OTP Input */}
-              <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block mb-2 text-center">
-                  Enter 6-Digit OTP
+              <div className="space-y-4">
+                <label className="text-xs font-black text-dark-500 uppercase tracking-[0.2em] block text-center">
+                  Enter 6-Digit Passphrase
                 </label>
                 <input
                   type="text"
                   maxLength={6}
-                  placeholder="• • • • • •"
+                  placeholder="••••••"
                   value={otp}
                   onChange={(e) => handleOtpChange(e.target.value)}
-                  className="w-full bg-gray-50 border-2 border-transparent focus:border-green-500 rounded-xl py-6 px-4 font-black outline-none transition-all text-4xl tracking-[0.5em] text-center"
+                  className="w-full bg-dark-900 border border-dark-800 focus:border-primary-500 rounded-2xl py-6 px-4 font-black outline-none transition-all text-4xl tracking-[0.6em] text-center text-white shadow-inner"
                   autoFocus
                 />
               </div>
@@ -226,79 +232,83 @@ const PhoneVerification = () => {
               <button
                 onClick={handleVerifyOTP}
                 disabled={isLoading || otp.length !== 6}
-                className="w-full bg-green-600 text-white font-black py-4 rounded-xl hover:bg-green-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg flex items-center justify-center gap-2"
+                className="btn btn-primary btn-xl w-full flex items-center justify-center gap-3 transition-transform active:scale-95"
               >
                 {isLoading ? (
                   <>
-                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                    </svg>
-                    Verifying...
+                    <div className="w-5 h-5 border-2 border-dark-950/30 border-t-dark-950 rounded-full animate-spin"></div>
+                    Authenticating...
                   </>
                 ) : (
                   <>
-                    <span>✓</span> Verify & Continue
+                    <span>🛡️</span> Secure Verification
                   </>
                 )}
               </button>
 
-              {/* Resend */}
-              <div className="text-center">
-                {countdown > 0 ? (
-                  <p className="text-gray-400 text-sm">
-                    Resend OTP in <span className="font-bold text-gray-600">{countdown}s</span>
-                  </p>
-                ) : (
-                  <button
-                    onClick={handleResend}
-                    disabled={isLoading}
-                    className="text-orange-600 font-bold text-sm hover:underline"
-                  >
-                    Didn't receive the code? Resend OTP
-                  </button>
-                )}
-              </div>
+              {/* Resend & Back */}
+              <div className="flex flex-col gap-4">
+                <div className="text-center">
+                  {countdown > 0 ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-primary-500 rounded-full animate-pulse"></div>
+                      <p className="text-dark-500 text-sm font-bold">
+                        Retry available in <span className="text-primary-400">{countdown}s</span>
+                      </p>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleResend}
+                      disabled={isLoading}
+                      className="text-primary-400 font-black text-sm hover:text-primary-300 transition-colors uppercase tracking-widest"
+                    >
+                      Resend Passcode
+                    </button>
+                  )}
+                </div>
 
-              {/* Change Number */}
-              <button
-                onClick={() => {
-                  setStep('phone');
-                  setOtp('');
-                  setDemoOtp('');
-                }}
-                className="w-full text-gray-500 font-bold py-2 text-sm hover:text-gray-700"
-              >
-                ← Change Phone Number
-              </button>
+                <button
+                  onClick={() => {
+                    setStep('phone');
+                    setOtp('');
+                    setDemoOtp('');
+                  }}
+                  className="w-full text-dark-500 font-black py-2 text-[10px] hover:text-dark-300 transition-colors uppercase tracking-[0.2em]"
+                >
+                  ← Modify Target Number
+                </button>
+              </div>
             </div>
           )}
         </div>
 
-        {/* User Info */}
+        {/* User context info */}
         {authUser && (
-          <div className="text-center mt-6">
-            <p className="text-white/80 text-sm">
-              Logged in as: <span className="font-bold">{authUser.email}</span>
-            </p>
-            {authUser.emailVerified && (
-              <span className="inline-flex items-center gap-1 text-green-200 text-xs font-bold mt-1">
-                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+          <div className="mt-8 flex flex-col items-center gap-3">
+             <div className="px-4 py-2 bg-dark-900 border border-dark-800 rounded-xl flex items-center gap-3">
+                <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
+                <p className="text-dark-300 text-xs font-bold truncate max-w-[200px]">
+                  ID: {authUser.email}
+                </p>
+             </div>
+             {authUser.emailVerified && (
+              <div className="flex items-center gap-2 text-primary-500/60 font-black text-[10px] uppercase tracking-widest">
+                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
-                Email Verified
-              </span>
+                Email Cleared
+              </div>
             )}
           </div>
         )}
 
-        {/* Skip for Demo */}
-        <div className="text-center mt-4">
+        {/* Demo Navigation */}
+        <div className="text-center mt-8">
           <button 
             onClick={() => navigate('/profile')}
-            className="text-white/60 text-sm font-medium hover:text-white underline"
+            className="text-dark-600 text-xs font-black uppercase tracking-[0.3em] hover:text-primary-500 transition-colors"
           >
-            Skip for now (Demo)
+            Skip to Dashboard →
           </button>
         </div>
       </div>

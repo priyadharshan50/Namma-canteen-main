@@ -1,120 +1,90 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { resendEmailVerification } from '../services/authService';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { resendVerificationEmail } from '../services/authService';
 import { useApp } from '../context/AppContext';
+import PageTransition from '../components/PageTransition';
 
 const EmailVerificationScreen = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { addNotification } = useApp();
-  
   const email = location.state?.email || '';
   const [isResending, setIsResending] = useState(false);
-  const [countdown, setCountdown] = useState(60);
-
-  useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [countdown]);
 
   const handleResend = async () => {
-    if (countdown > 0) return;
-    
+    if (!email) return;
     setIsResending(true);
-    const result = await resendEmailVerification();
+    const result = await resendVerificationEmail();
     setIsResending(false);
-
+    
     if (result.success) {
       addNotification('Verification email sent!', 'success');
-      setCountdown(60);
     } else {
-      addNotification(result.error || 'Failed to resend email', 'error');
+      addNotification(result.error || 'Failed to resend', 'error');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Card */}
-        <div className="bg-white rounded-3xl p-8 shadow-2xl text-center">
-          {/* Icon */}
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-orange-100 rounded-full mb-6">
-            <span className="text-4xl">📧</span>
-          </div>
+    <PageTransition>
+      <div className="min-h-screen bg-dark-950 flex items-center justify-center p-4">
+        {/* Background Effects */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary-600/10 rounded-full blur-3xl"></div>
+        </div>
 
-          <h1 className="text-2xl font-black text-gray-900 mb-2">
-            Check Your Email
-          </h1>
-          
-          <p className="text-gray-600 mb-6">
-            We've sent a verification link to:
-            <br />
-            <span className="font-bold text-gray-900">{email || 'your email address'}</span>
-          </p>
+        <div className="w-full max-w-md relative z-10">
+          <div className="card-glass p-8 rounded-3xl text-center">
+            {/* Icon */}
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-primary-500/20 rounded-full mb-6">
+              <span className="text-4xl">📧</span>
+            </div>
+            
+            <h1 className="text-2xl font-black text-white mb-2">Check Your Email</h1>
+            <p className="text-dark-400 mb-6">
+              We've sent a verification link to:
+              <br />
+              <span className="font-bold text-white">{email}</span>
+            </p>
 
-          {/* Instructions */}
-          <div className="bg-gray-50 rounded-xl p-4 mb-6 text-left">
-            <h3 className="font-bold text-gray-900 mb-2 text-sm">Next Steps:</h3>
-            <ol className="text-sm text-gray-600 space-y-2">
-              <li className="flex items-start gap-2">
-                <span className="bg-orange-100 text-orange-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</span>
-                <span>Open your email inbox</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="bg-orange-100 text-orange-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</span>
-                <span>Click the verification link</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="bg-orange-100 text-orange-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</span>
-                <span>Return here and log in</span>
-              </li>
-            </ol>
-          </div>
+            {/* Steps */}
+            <div className="bg-dark-800/50 rounded-xl p-4 text-left space-y-3 mb-6 border border-dark-700">
+              <div className="flex items-start gap-3">
+                <span className="bg-primary-500/20 text-primary-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</span>
+                <span className="text-sm text-dark-300">Open the email from Namma Canteen</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="bg-primary-500/20 text-primary-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</span>
+                <span className="text-sm text-dark-300">Click the verification link</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="bg-primary-500/20 text-primary-400 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</span>
+                <span className="text-sm text-dark-300">Return here to log in</span>
+              </div>
+            </div>
 
-          {/* Resend Button */}
-          <div className="mb-4">
-            {countdown > 0 ? (
-              <p className="text-gray-400 text-sm">
-                Resend email in <span className="font-bold">{countdown}s</span>
-              </p>
-            ) : (
+            {/* Resend Button */}
+            <div className="text-center mb-6">
+              <p className="text-dark-500 text-sm mb-2">Didn't receive the email?</p>
               <button
                 onClick={handleResend}
                 disabled={isResending}
-                className="text-orange-600 font-bold text-sm hover:underline"
+                className="text-primary-400 font-bold text-sm hover:text-primary-300 transition-colors"
               >
-                {isResending ? 'Sending...' : "Didn't receive the email? Resend"}
+                {isResending ? 'Sending...' : 'Resend Email'}
               </button>
-            )}
+            </div>
+
+            {/* Action Button */}
+            <Link
+              to="/login"
+              className="btn btn-primary btn-xl w-full"
+            >
+              Back to Login
+            </Link>
           </div>
-
-          {/* Login Button */}
-          <Link
-            to="/login"
-            className="block w-full bg-orange-600 text-white font-black py-3.5 rounded-xl hover:bg-orange-700 transition-all shadow-lg"
-          >
-            Go to Login
-          </Link>
-
-          {/* Spam Reminder */}
-          <p className="text-xs text-gray-400 mt-4">
-            💡 Check your spam folder if you don't see the email
-          </p>
-        </div>
-
-        {/* Back Link */}
-        <div className="text-center mt-6">
-          <button 
-            onClick={() => navigate(-1)}
-            className="text-white/80 text-sm font-medium hover:text-white"
-          >
-            ← Go Back
-          </button>
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 };
 

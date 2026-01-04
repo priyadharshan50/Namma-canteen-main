@@ -383,6 +383,8 @@ export const resendEmailVerification = async () => {
   }
 };
 
+export const resendVerificationEmail = resendEmailVerification;
+
 /**
  * Send password reset email
  */
@@ -727,3 +729,6 @@ export const getAllUsers = () => {
     return safeUser;
   });
 };
+
+// Aliases for compatibility with redesigned components
+export const sendPasswordReset = resetPassword;
