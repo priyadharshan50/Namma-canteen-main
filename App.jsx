@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
+import ErrorBoundary from './components/ErrorBoundary';
 import Navbar from './components/layout/Navbar';
+import Footer from './components/layout/Footer';
 import SplashScreen from './components/SplashScreen';
 import HomePage from './pages/HomePage';
 import MenuPage from './pages/MenuPage';
@@ -15,6 +17,7 @@ import VerifyOTPScreen from './pages/VerifyOTPScreen';
 import EmailVerificationScreen from './pages/EmailVerificationScreen';
 import ForgotPasswordScreen from './pages/ForgotPasswordScreen';
 import PhoneVerification from './components/auth/PhoneVerification';
+import ContactUsPage from './pages/ContactUsPage';
 
 // Toast Notifications Component with Color-Coded Status
 const ToastNotifications = () => {
@@ -71,7 +74,8 @@ const AppRoutes = () => {
     <>
       <ToastNotifications />
       {showNavbar && <Navbar />}
-      <Routes>
+      <div className="flex flex-col min-h-screen">
+        <Routes>
         {/* Auth Routes */}
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/signup" element={<SignupScreen />} />
@@ -86,8 +90,11 @@ const AppRoutes = () => {
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/kitchen" element={<KitchenPage />} />
+        <Route path="/contact" element={<ContactUsPage />} />
         <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+        </Routes>
+        {showNavbar && <Footer />}
+      </div>
     </>
   );
 };
@@ -107,13 +114,15 @@ const App = () => {
   }
 
   return (
-    <BrowserRouter>
-      <AppProvider>
-        <div className="min-h-screen">
-          <AppRoutes />
-        </div>
-      </AppProvider>
-    </BrowserRouter>
+    <ErrorBoundary name="AppRoot">
+      <BrowserRouter>
+        <AppProvider>
+          <div className="min-h-screen">
+            <AppRoutes />
+          </div>
+        </AppProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 };
 

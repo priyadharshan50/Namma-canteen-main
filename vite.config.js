@@ -18,6 +18,22 @@ export default defineConfig(({ mode }) => {
         alias: {
           '@': path.resolve(__dirname, '.'),
         }
+      },
+      test: {
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: './setup-tests.js',
+        coverage: {
+          provider: 'v8',
+          reporter: ['text', 'json', 'html'],
+          exclude: [
+            'node_modules/**',
+            'dist/**',
+            '**/*.spec.js',
+            '**/*.test.js',
+            '**/setup-tests.js',
+          ]
+        }
       }
     };
 });

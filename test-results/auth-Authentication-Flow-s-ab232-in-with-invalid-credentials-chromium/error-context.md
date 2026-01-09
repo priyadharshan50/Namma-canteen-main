@@ -1,0 +1,44 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: ❌ Error
+      - generic [ref=e7]: Just Now
+    - paragraph [ref=e8]: Invalid email or password
+  - generic [ref=e10]:
+    - generic [ref=e16]:
+      - generic [ref=e18]: 🍛
+      - generic [ref=e19]:
+        - heading "Welcome to Namma Canteen" [level=2] [ref=e20]
+        - paragraph [ref=e21]: Smart campus dining with AI food pairing, real-time tracking, and gamified rewards.
+      - generic [ref=e22]:
+        - generic [ref=e23]: 🤖 AI Suggestions
+        - generic [ref=e24]: 📱 OTP Verification
+        - generic [ref=e25]: 💳 Namma Credit
+    - generic [ref=e27]:
+      - generic [ref=e28]:
+        - heading "Welcome Back!" [level=1] [ref=e29]
+        - paragraph [ref=e30]: Log in to your Namma Canteen account
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - generic [ref=e34]: Email
+            - textbox "student@college.edu" [ref=e35]: wrong@email.com
+          - generic [ref=e36]:
+            - generic [ref=e37]: Password
+            - generic [ref=e38]:
+              - textbox "••••••••" [ref=e39]: wrongpassword
+              - button "👁️" [ref=e40] [cursor=pointer]
+          - link "Forgot Password?" [ref=e42] [cursor=pointer]:
+            - /url: /forgot-password
+          - button "Log In" [ref=e43] [cursor=pointer]
+        - generic [ref=e44]: or
+        - paragraph [ref=e45]:
+          - text: Don't have an account?
+          - link "Sign Up" [ref=e46] [cursor=pointer]:
+            - /url: /signup
+      - link "Skip for now (Demo Mode) →" [ref=e48] [cursor=pointer]:
+        - /url: /
+```
