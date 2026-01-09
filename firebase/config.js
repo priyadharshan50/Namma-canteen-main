@@ -3,14 +3,14 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// Your web app's Firebase configuration
+// Your web app's Firebase configuration (loaded from environment variables)
 const firebaseConfig = {
-  apiKey: "AIzaSyAeIURKXl5Mvh9QAyv_TkEJCCT4laarbMQ",
-  authDomain: "namma-canteen-54ed2.firebaseapp.com",
-  projectId: "namma-canteen-54ed2",
-  storageBucket: "namma-canteen-54ed2.firebasestorage.app",
-  messagingSenderId: "952567823718",
-  appId: "1:952567823718:web:4b3db129b5c18858b31ca7"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 // Initialize Firebase
