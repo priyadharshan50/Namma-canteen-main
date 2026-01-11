@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { MENU_ITEMS } from '../constants';
 import PageTransition from '../components/PageTransition';
+import Testimonials from '../components/Testimonials';
 
 const HomePage = () => {
   const { 
@@ -254,6 +255,9 @@ const HomePage = () => {
               ))}
             </div>
           </div>
+
+          {/* Testimonials Section */}
+          <Testimonials />
 
           {/* Features Grid */}
           <div className="card-glass rounded-3xl p-6 md:p-8">
